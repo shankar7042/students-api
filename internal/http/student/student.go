@@ -112,3 +112,39 @@ func DeleteStudent(storage storage.Storage) http.HandlerFunc {
 		response.WriteJson(w, http.StatusOK, map[string]int64{"id": intId})
 	}
 }
+
+func UpdateStudent(storage storage.Storage) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		id := r.PathValue("id")
+
+		intId, err := strconv.ParseInt(id, 10, 64)
+		if err != nil {
+			response.WriteJson(w, http.StatusBadRequest, response.GeneralError(err))
+			return
+		}
+
+		var student types.Student
+
+		err = json.NewDecoder(r.Body).Decode(&student)
+		if errors.Is(err, io.EOF) {
+			response.WriteJson(w, http.StatusBadRequest, response.GeneralError(fmt.Errorf("empty body")))
+			return
+		}
+
+		if err != nil {
+			response.WriteJson(w, http.StatusBadRequest, response.GeneralError(err))
+			return
+		}
+
+		rowsAffected, err := storage.UpdateStudentById(intId, &student)
+		if err != nil {
+			response.WriteJson(w, http.StatusBadRequest, response.GeneralError(err))
+			return
+		}
+		slog.Info("Updating student with ", slog.String("id", fmt.Sprint(intId)))
+		slog.Info("Number of rows afftected by updating student ", slog.String("rows affected", fmt.Sprint(rowsAffected)))
+
+		response.WriteJson(w, http.StatusOK, map[string]int64{"id": intId})
+	}
+}

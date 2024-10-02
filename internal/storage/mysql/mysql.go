@@ -125,3 +125,47 @@ func (m *MySql) DeleteStudentById(id int64) (int64, error) {
 
 	return rowsAffected, nil
 }
+
+func (m *MySql) UpdateStudentById(id int64, student *types.Student) (int64, error) {
+	oldStudent, err := m.GetStudentById(id)
+	if err != nil {
+		return 0, err
+	}
+
+	var updatedStudent types.Student
+	updatedStudent.Id = oldStudent.Id
+	if student.Name == "" {
+		updatedStudent.Name = oldStudent.Name
+	} else {
+		updatedStudent.Name = student.Name
+	}
+
+	if student.Email == "" {
+		updatedStudent.Email = oldStudent.Email
+	} else {
+		updatedStudent.Email = student.Email
+	}
+
+	if student.Age == 0 {
+		updatedStudent.Age = oldStudent.Age
+	} else {
+		updatedStudent.Age = student.Age
+	}
+
+	stmt, err := m.Db.Prepare("UPDATE students SET name = ?, email = ?, age = ? WHERE id = ?")
+	if err != nil {
+		return 0, err
+	}
+
+	result, err := stmt.Exec(&updatedStudent.Name, &updatedStudent.Email, &updatedStudent.Age, &updatedStudent.Id)
+	if err != nil {
+		return 0, err
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return 0, err
+	}
+
+	return rowsAffected, nil
+}
