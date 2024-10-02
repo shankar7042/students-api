@@ -12,7 +12,7 @@ import (
 
 	"github.com/shankar7042/students-api/internal/config"
 	"github.com/shankar7042/students-api/internal/http/student"
-	"github.com/shankar7042/students-api/internal/storage/sqlite"
+	"github.com/shankar7042/students-api/internal/storage/mysql"
 )
 
 func main() {
@@ -22,7 +22,7 @@ func main() {
 
 	// database setup
 
-	_, err := sqlite.New(cfg)
+	_, err := mysql.New(cfg)
 	if err != nil {
 		log.Fatal(err)
 	}

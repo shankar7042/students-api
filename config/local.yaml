@@ -1,4 +1,4 @@
 env: "dev"
-storage_path: "storage/storage.db"
+storage_path: "root:root@/student_db"
 http_server:
   address: "localhost:8080"

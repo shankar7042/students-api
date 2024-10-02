@@ -1,34 +1,35 @@
-package sqlite
+package mysql
 
 import (
 	"database/sql"
 
-	_ "github.com/mattn/go-sqlite3"
 	"github.com/shankar7042/students-api/internal/config"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
-type Sqlite struct {
+type MySql struct {
 	Db *sql.DB
 }
 
-func New(cfg *config.Config) (*Sqlite, error) {
-	db, err := sql.Open("sqlite3", cfg.StoragePath)
+func New(cfg *config.Config) (*MySql, error) {
+	db, err := sql.Open("mysql", cfg.StoragePath)
 	if err != nil {
 		return nil, err
 	}
 
 	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS students(
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		id INTEGER AUTO_INCREMENT PRIMARY KEY,
 		name TEXT,
 		email TEXT,
 		age INTEGER
-	)`)
+	);`)
 
 	if err != nil {
 		return nil, err
 	}
 
-	return &Sqlite{
+	return &MySql{
 		Db: db,
 	}, nil
 
