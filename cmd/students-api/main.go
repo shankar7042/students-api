@@ -22,7 +22,7 @@ func main() {
 
 	// database setup
 
-	_, err := mysql.New(cfg)
+	storage, err := mysql.New(cfg)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -32,7 +32,7 @@ func main() {
 
 	router := http.NewServeMux()
 
-	router.HandleFunc("POST /api/students", student.New())
+	router.HandleFunc("POST /api/students", student.New(storage))
 	// setup server
 
 	server := http.Server{
