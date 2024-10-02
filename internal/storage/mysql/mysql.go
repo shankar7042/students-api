@@ -106,3 +106,22 @@ func (m *MySql) GetStudents() ([]types.Student, error) {
 
 	return students, nil
 }
+
+func (m *MySql) DeleteStudentById(id int64) (int64, error) {
+	stmt, err := m.Db.Prepare("DELETE FROM students WHERE id = ?")
+	if err != nil {
+		return 0, err
+	}
+
+	result, err := stmt.Exec(id)
+	if err != nil {
+		return 0, err
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return 0, err
+	}
+
+	return rowsAffected, nil
+}
